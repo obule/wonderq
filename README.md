@@ -14,7 +14,7 @@ WonderQ is a simple messaging queue system that allows producer add jobs and con
 
 ## Link to Hosted App
 
-- [API link](https://craftdrive-api.herokuapp.com/employee)
+- [API link](https://wonderq-api.herokuapp.com/employee)
 
 ## Tech Stack Used
 
@@ -35,7 +35,7 @@ To clone and run this application, you'll need [Git](https://git-scm.com) and [N
 
 ```bash
 # Clone this repository
-$ git clone https://github.com/obule/craftdrive-test.git
+$ git clone https://github.com/obule/wonderq.git
 
 # Go into the repository
 $ cd wonder-test
@@ -64,7 +64,7 @@ $ npm run test
 - /sqs/add-job
 Method: POST
 Body: { message: string } message to publish
-Headers: `Authorization: Bearer token`
+Headers: `authorization: JWT token`
 Success Response: {
   success: true,
   data: {
@@ -85,22 +85,44 @@ Error Response: {
   data: null
 }
 
-- /sqs/process-job # Use to deque a job after been processed
-Method: POST
-Body: { id: string } # Unique Id of the processed job
-Headers: `Authorization: Bearer token`
+
+- /sqs/:amount # amount is the number of jobs the consumer wants to process
+Method: GET
+Headers: `authorization: JWT token`
 Success Response: {
   success: true,
   data: {
     success: true,
-    message: 'Job retrieved'
-    data: {
-      id: number,
+    message: 'Jobs retrieved'
+    data: [
+      {
+      id: number, # Unique id generated for each job
       message: string,
       meta: {
-        isAvailable: boolean
+        isAvailable: boolean # If message is available to process.
       }
     }
+    ]
+  }
+}
+Error Response: {
+  success: false,
+  message: 'Server Error',
+  data: null
+}
+
+
+
+- /sqs/process-job # Use to deque a job after been processed
+Method: POST
+Body: { id: string } # Unique Id of the processed job
+Headers: `authorization: JWT token`
+Success Response: {
+  success: true,
+  data: {
+    success: true,
+    message: 'Job successfully proccessed'
+    data: true / false
   }
 }
 Error Response: {
@@ -110,26 +132,28 @@ Error Response: {
 }
 ```
 
-- GET --- /employee/:id -- Find One
-- POST --- /employee
-  data {
-  email: string;
-  firstName: string;
-  lastName: string;
-  gender: string;
-  }
-- PATCH --- /employee Update employee
-- DELETE --- /employee/:id Delete employee
-
-```
-
 ## NOTE:
 
 Please add authorization header with this token to access the endpoints
+
+```
 token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIEFkbWluIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlIjoiYWRtaW4ifQ.9v5NoVLOjyj5HZwPkPFKb73heDebRT-WsohLqoPO8Qk
+```
 
 Example:
+
+```
 authorization: 'JWT token'
+```
+
+## THOUGHTS
+
+This simple implementaion of Amazon SQS uses an array as the data structure of choice to enqueue and dequeue jobs. This implementation comes with some bottle necks which might add limitations that will prevent the production readiness of the application. Some of the problems and potential solutions/additions are discussed below.
+
+- Data structure used: Using an array is efficient for just local use but it can quickly become a problem when the application grow in size. Such growth can lead to the array been memory intensive to the server, thereby making job retrieval and dequeing slow.
+- Using arrays can be ephemeral, meaning when the server reloads, we will loose all the data stored in it. Using a solution like MySQL to persist the information will go a long way in maintaing data intergrity accross the system.
+- The current application currently runs on a single server, I think running it on multiple server while keeping on datastore(Redis/Database) will improve speed of the application.
+- All the data in the current application are stored in an array. No provision is made to take care of redundancy. If the server crashes, we will loose all the jobs in the queue. I will suggest replicating the data accross multiple nodes to account for system failure will solve the issue of system failure.
 
 ## Author
 
@@ -140,4 +164,7 @@ Ruona Izuagbala
 MIT
 
 ---
+
+```
+
 ```
