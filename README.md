@@ -45,7 +45,7 @@ $ cd wonder-test
 $ npm install
 
 # Create .env file for environmental variables in your root directory and add variable for PORT and AVAILABILITY_TIME
-AVAILABILITY_TIME=30000
+AVAILABILITY_TIME=30000 # In milliseconds
 PORT=5000
 
 
