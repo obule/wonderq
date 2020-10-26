@@ -146,6 +146,8 @@ This simple implementaion of Amazon SQS uses an array as the data structure of c
 - Using arrays can be ephemeral, meaning when the server reloads, we will loose all the data stored in it. Using a solution like MySQL to persist the information will go a long way in maintaing data intergrity accross the system.
 - The current application currently runs on a single server, I think running it on multiple server while keeping one datastore(Redis/Database) will improve speed of the application.
 - All the data in the current application are stored in an array. No provision is made to take care of redundancy. If the server crashes, we will loose all the jobs in the queue. I will suggest replicating the data accross multiple nodes to account for system failure.
+- Since array have space limitations and hence limited capacity, I would have used liknked list, but it would be slow.
+- Data in my solution is transmitted as plain objects which is not secured, using end to end encryption technologies like SSL certificates will go a long way to protect sensitive data
 
 ## Author
 
