@@ -15,7 +15,7 @@ WonderQ is a simple messaging queue system that allows producer add jobs and con
 
 ## Link to Hosted App
 
-- [API link](https://wonderq-api.herokuapp.com/employee)
+- [API link](https://wonderq-api.herokuapp.com)
 
 ## Tech Stack Used
 
@@ -52,7 +52,7 @@ PORT=5000
 # Run the app
 $ npm start
 
-# Check the port on the specified port on the env or 9000
+# Check the port on the specified port on the env or 5000
 
 
 # Run test
@@ -68,16 +68,13 @@ Body: { message: string } message to publish
 Headers: `authorization: JWT token`
 Success Response: {
   success: true,
+  message: 'Job retrieved'
   data: {
-    success: true,
-    message: 'Job retrieved'
-    data: {
       id: number, # Unique id generated for each job
       message: string,
       meta: {
         isAvailable: boolean # If message is available to process.
       }
-    }
   }
 }
 Error Response: {
@@ -92,19 +89,16 @@ Method: GET
 Headers: `authorization: JWT token`
 Success Response: {
   success: true,
-  data: {
-    success: true,
-    message: 'Jobs retrieved'
+   message: 'Jobs retrieved'
     data: [
       {
-      id: number, # Unique id generated for each job
-      message: string,
-      meta: {
-        isAvailable: boolean # If message is available to process.
-      }
+        id: number, # Unique id generated for each job
+        message: string,
+        meta: {
+          isAvailable: boolean # If message is available to process.
+        }
     }
-    ]
-  }
+  ]
 }
 Error Response: {
   success: false,
@@ -120,11 +114,8 @@ Body: { id: string } # Unique Id of the processed job
 Headers: `authorization: JWT token`
 Success Response: {
   success: true,
-  data: {
-    success: true,
-    message: 'Job successfully proccessed'
-    data: true / false
-  }
+  message: 'Job successfully proccessed'
+  data: true/false
 }
 Error Response: {
   success: false,
@@ -151,10 +142,10 @@ authorization: 'JWT token'
 
 This simple implementaion of Amazon SQS uses an array as the data structure of choice to enqueue and dequeue jobs. This implementation comes with some bottle necks which might add limitations that will prevent the production readiness of the application. Some of the problems and potential solutions/additions are discussed below.
 
-- Data structure used: Using an array is efficient for just local use but it can quickly become a problem when the application grow in size. Such growth can lead to the array been memory intensive to the server, thereby making job retrieval and dequeing slow.
+- Data structure used: Using an array is efficient for just local use but it can quickly become a problem when the application grows in size. Such growth can lead to the array been memory intensive to the server, thereby making job retrieval and dequeing slow.
 - Using arrays can be ephemeral, meaning when the server reloads, we will loose all the data stored in it. Using a solution like MySQL to persist the information will go a long way in maintaing data intergrity accross the system.
-- The current application currently runs on a single server, I think running it on multiple server while keeping on datastore(Redis/Database) will improve speed of the application.
-- All the data in the current application are stored in an array. No provision is made to take care of redundancy. If the server crashes, we will loose all the jobs in the queue. I will suggest replicating the data accross multiple nodes to account for system failure will solve the issue of system failure.
+- The current application currently runs on a single server, I think running it on multiple server while keeping one datastore(Redis/Database) will improve speed of the application.
+- All the data in the current application are stored in an array. No provision is made to take care of redundancy. If the server crashes, we will loose all the jobs in the queue. I will suggest replicating the data accross multiple nodes to account for system failure.
 
 ## Author
 
