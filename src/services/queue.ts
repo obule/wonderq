@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { Producer, ProducerPayload, SimpleQuequeService } from '../contracts/queue';
 import { queueSystem } from '../data/queue.data';
 
-export const AVAILABILITY_TIME = 300000; // 5 minutes to milliseconds
+export const AVAILABILITY_TIME = parseInt(process.env.AVAILABILITY_TIME || '30000'); // 5 minutes to milliseconds
 
 export class SQS implements SimpleQuequeService {
   public constructor(private queueSystemData = queueSystem) {}

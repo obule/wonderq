@@ -9,8 +9,9 @@ WonderQ is a simple messaging queue system that allows producer add jobs and con
 1. <a href="#hosted-app">Link to Hosted App</a>
 2. <a href="#application-features">Application Features</a>
 3. <a href="#how-to-use">How To Use</a>
-4. <a href="#author">Author</a>
-5. <a href="#license">License</a>
+4. <a href="#thoughts">Thoughts</a>
+5. <a href="#author">Author</a>
+6. <a href="#license">License</a>
 
 ## Link to Hosted App
 
@@ -43,16 +44,16 @@ $ cd wonder-test
 # Install dependencies
 $ npm install
 
-# Create .env file for environmental variables in your root directory and add variable for PORT
+# Create .env file for environmental variables in your root directory and add variable for PORT and AVAILABILITY_TIME
+AVAILABILITY_TIME=30000
+PORT=5000
+
 
 # Run the app
 $ npm start
 
 # Check the port on the specified port on the env or 9000
 
-# To run the app on Docker, you must have docker installed locally and running
-$ npm run docker:build
-$ npm run docker
 
 # Run test
 $ npm run test
